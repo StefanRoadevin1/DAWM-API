@@ -15,27 +15,19 @@ namespace DAWM_API.Controllers
             _config = config;
         }
 
-        public static readonly List<User> users = new List<User> { new Models.User() { UserId = "1", FirstName = "Andrei", LastName = "Valeriu", Email = "andrei.valeriu@gmail.com", Password = "1234", Pwd ="1234" } };
+        public static readonly List<User> users = new List<User> { new Models.User() { Id = 1, firstName = "Andrei", lastName = "Valeriu", email = "andrei.valeriu@gmail.com", password = "1234"} };
 
         [HttpGet]
-        public IActionResult GetUser([FromBody]User loginUser)  
+        public IActionResult GetUsers()  
         {
-            var User = users.FirstOrDefault(i=>i.UserId==loginUser.UserId);
-            if (User == null)
-            {
-                return NotFound("Invalid user ID");
-            }
-            return Ok(loginUser);
+            return Ok(users);
         }
-        [HttpGet]
-        [Route("{UserId}")]
 
-        [HttpPost("CreateUser")]
+        [HttpPost]
         public IActionResult CreateUser([FromBody] User newUser)
         {
-            newUser.UserId = System.Guid.NewGuid().ToString();
             users.Add(newUser);
-            return Ok();
+            return Ok(newUser);
             
         }
     }

@@ -8,33 +8,32 @@ namespace DAWM_API.Controllers
     [ApiController]
     public class MovieController : ControllerBase
     {
-        public static readonly List<Movie> movies = new List<Movie> { new Models.Movie() { Id = "1", Title = "Marksman", Category = "Thriller", Image = "https://m.media-amazon.com/images/M/MV5BMzI4M2E5ZWYtOGIxMy00ZWI4LTkxMzMtZGFiNWJkOWU5MzgwXkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_.jpg", Rating = 5, MainActor = "Liam Neeson" } };
+        public static readonly List<Movie> movies = new List<Movie> { new Models.Movie() { Id = 1, Title = "Marksman", Category = "Thriller",ReleaseYear=2022, Rating = 5, MainActor = "Liam Neeson" } };
 
         [HttpGet]
         public IActionResult GetAllmovies()
         {
             return Ok(movies);
         }
+
         [HttpPost]
         public IActionResult CreateMovie([FromBody] Movie newMovie)
         {
             try
             {
-                newMovie.Id = System.Guid.NewGuid().ToString();
-
                 movies.Add(newMovie);
-                return Ok();
+                return Ok(newMovie);
             }
             catch (Exception ex)
             {
                 return BadRequest("Cannot add new movie");
             }
         }
+
         [HttpPut]
-        [Route("{id}")]
-        public IActionResult UpdateMovie([FromRoute] string id, [FromBody] Movie updatedMovie)
+        public IActionResult UpdateMovie([FromBody] Movie updatedMovie)
         {
-            var movieToUpdate = movies.FirstOrDefault(i => i.Id == id);
+            var movieToUpdate = movies.FirstOrDefault(i => i.Id == updatedMovie.Id);
             if (movieToUpdate == null)
             {
                 return NotFound("Invalid movie ID");
@@ -43,15 +42,15 @@ namespace DAWM_API.Controllers
             movieToUpdate.Title = updatedMovie.Title;
             movieToUpdate.Category = updatedMovie.Category;
             movieToUpdate.Rating = updatedMovie.Rating;
-            movieToUpdate.Image = updatedMovie.Image;
+            movieToUpdate.ReleaseYear = updatedMovie.ReleaseYear;
             movieToUpdate.MainActor = updatedMovie.MainActor;
             return Ok(movieToUpdate);
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteMovie(string id)
+        public IActionResult DeleteMovie([FromBody] Movie deleteMovie)
         {
-            var movieToDelete = movies.FirstOrDefault(i => i.Id == id);
+            var movieToDelete = movies.FirstOrDefault(i => i.Id == deleteMovie.Id);
             if (movieToDelete == null)
             {
                 return NotFound("Invalid movie ID");
